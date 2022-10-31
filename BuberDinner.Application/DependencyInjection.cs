@@ -10,4 +10,5 @@ namespace BuberDinner.Application
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             return services;
         }
+    }
 }

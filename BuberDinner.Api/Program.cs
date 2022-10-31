@@ -3,10 +3,11 @@ using BuberDinner.Application;
 using BuberDinner.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 {
     builder.Services
         .AddApplication()
-        .AddInfrastructure();
+        .AddInfrastructure(builder.Configuration);
 
     builder.Services.AddControllers();
 }
