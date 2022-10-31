@@ -25,10 +25,10 @@ namespace BuberDinner.Api.Controllers
                 request.Password);
 
             var authResponse = new AuthenticationResponse(
-                 authResult.Id,
-                 authResult.FirstName,
-                 authResult.LastName,
-                 authResult.Email,
+                 authResult.User.Id,
+                 authResult.User.FirstName,
+                 authResult.User.LastName,
+                 authResult.User.Email,
                  authResult.Token
                 );
 
@@ -43,10 +43,10 @@ namespace BuberDinner.Api.Controllers
                 request.Password);
 
             var authResponse = new AuthenticationResponse(
-              authResult.Id,
-              authResult.FirstName,
-              authResult.LastName,
-              authResult.Email,
+              authResult.User.Id,
+              authResult.User.FirstName,
+              authResult.User.LastName,
+              authResult.User.Email,
               authResult.Token
              );
 
