@@ -9,9 +9,10 @@ namespace BuberDinner.Api.Controllers
         public IActionResult Error()
         {
             //get error from the exception where you can find the error from your services
-            Exception? exception = this.HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
+            //Exception? exception = this.HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
+            //return this.Problem(title: exception?.Message);
 
-            return this.Problem(title: exception?.Message);
+            return this.Problem();
         }
 
     }

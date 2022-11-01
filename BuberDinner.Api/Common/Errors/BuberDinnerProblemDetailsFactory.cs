@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BuberDinner.Api.Common.Http;
+using ErrorOr;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
 
-namespace BuberDinner.Api.Errors
+namespace BuberDinner.Api.Common.Errors
 {
     public class BuberDinnerProblemDetailsFactory : ProblemDetailsFactory
     {
@@ -91,8 +93,23 @@ namespace BuberDinner.Api.Errors
                 problemDetails.Extensions["traceId"] = traceId;
             }
 
-            // we can add whatever we want here
-            problemDetails.Extensions.Add("customProperty", "customValue");
+            /*
+             Code below is going to add addinitional field with errorCodes (set in Domain Layer as code(string))
+              {
+               "type": "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+               "title": "Invalid Credentials.",
+               "status": 400,
+               "traceId": "00-2f000d3be3127ad8ea0b12e4437ea6c6-10c7ba7f886f300d-00",
+               "errorCodes": [
+                   "Auth.InvalidCredentials"
+               ]
+             */
+            var errors = httpContext?.Items[HttpContextItemKeys.Errors] as List<Error>;
+
+            if (errors is not null)
+            {
+                problemDetails.Extensions.Add("errorCodes", errors.Select(x => x.Code));
+            }
         }
     }
 }
