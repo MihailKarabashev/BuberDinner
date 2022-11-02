@@ -8,10 +8,12 @@ using MediatR;
 using ErrorOr;
 using BuberDinner.Application.Authentication.Queries.Login;
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BuberDinner.Api.Controllers
 {
     [Route("auth")]
+    [AllowAnonymous]
     public class AuthenticationController : ApiController
     {
         private readonly ISender mediator;
