@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using ErrorOr;
 using BuberDinner.Application.Authentication.Queries.Login;
+using MapsterMapper;
 
 namespace BuberDinner.Api.Controllers
 {
@@ -14,24 +15,23 @@ namespace BuberDinner.Api.Controllers
     public class AuthenticationController : ApiController
     {
         private readonly ISender mediator;
+        private readonly IMapper mapper;
 
-        public AuthenticationController(ISender mediator)
+        public AuthenticationController(ISender mediator, IMapper mapper)
         {
             this.mediator = mediator;
+            this.mapper = mapper;
         }
 
         [Route("register")][HttpPost]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
-            var command = new RegisterCommand(request.FirstName,
-                request.LastName,
-                request.Email,
-                request.Password);
+            var command = this.mapper.Map<RegisterCommand>(request);
 
             ErrorOr<AuthenticationResult> authResult = await this.mediator.Send(command);
 
             return authResult.Match(
-                authResult => this.Ok(MapAuthResult(authResult)),
+                authResult => this.Ok(this.mapper.Map<AuthenticationResponse>(authResult)),
                 errors => this.Problem(errors));
         }
        
@@ -39,7 +39,10 @@ namespace BuberDinner.Api.Controllers
         [Route("login")] [HttpPost]
         public async Task<IActionResult> Login(LoginRequest request)
         {
-            var loginQuery = new LoginQuery(request.Email, request.Password);
+            // get Login request (record) and map it to LoginQuery (record)
+            var loginQuery = this.mapper.Map<LoginQuery>(request);  
+
+            //send LoginQuery with mediatoR to LoginQueryHandler and return ErrorOr<AuthResult>
             var authResult = await this.mediator.Send(loginQuery);
 
             if (authResult.IsError && authResult.FirstError == Errors.Authentication.InvalidCredentials)
@@ -51,20 +54,9 @@ namespace BuberDinner.Api.Controllers
 
 
             return authResult.Match(
-                authResult => this.Ok(MapAuthResult(authResult)),
+                //map AuthResult to AuthResponse if all pass
+                authResult => this.Ok(this.mapper.Map<AuthenticationResponse>(authResult)),
                 errors => this.Problem(errors));
-        }
-
-
-        private static AuthenticationResponse MapAuthResult(AuthenticationResult authResult)
-        {
-            return new AuthenticationResponse(
-                 authResult.User.Id,
-                 authResult.User.FirstName,
-                 authResult.User.LastName,
-                 authResult.User.Email,
-                 authResult.Token
-                );
         }
     }
 }
