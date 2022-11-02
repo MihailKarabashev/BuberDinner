@@ -1,4 +1,3 @@
-using BuberDinner.Application.Services.Authentication;
 using BuberDinner.Application;
 using BuberDinner.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Infrastructure;

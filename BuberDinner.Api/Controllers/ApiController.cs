@@ -9,7 +9,7 @@ namespace BuberDinner.Api.Controllers
     {
         protected IActionResult Problem(List<Error> errors)
         {
-            
+            //adding errors to our custom details factory
             this.HttpContext.Items[HttpContextItemKeys.Errors] = errors;
 
             var firstError = errors[0];
